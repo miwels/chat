@@ -12,8 +12,8 @@ io.on('connection', function(socket){
 		io.emit('user connects', nickname + ' has connected');
 	});
 
-	socket.on('chat message', function(msg){
-		io.emit('chat message', msg);
+	socket.on('chat message', function(msg, user){
+		io.emit('chat message', msg, user);
 	});
 
 	socket.on('user is typing', function(user){

@@ -33,14 +33,14 @@
 
             // send messages to server
             $('form').submit(function(){
-                socket.emit('chat message', $('#m').val());
+                socket.emit('chat message', $('#m').val(), nickname);
                 $('#m').val('');
                 return false;
             });
 
             // once a message has been received, append it to the chat window
-            socket.on('chat message', function(msg){
-                $('#messages').append('<li>' + msg + '</li>');
+            socket.on('chat message', function(msg, user){
+                $('#messages').append('<li><strong>' + user + ': </strong>' + msg + '</li>');
             });
 
             // display the nickname of the user who connected
