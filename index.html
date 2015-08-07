@@ -14,6 +14,9 @@
         </style>
     </head>
     <body>
+        <div class="online-users">
+            <ul class="online-users-list"></ul>
+        </div>
         <ul id="messages"></ul>
         <form action="">
             <input id="m" autocomplete="off" /><button>Send</button>
@@ -30,6 +33,17 @@
             // user connects to the chat
             var socket = io();
             socket.emit('user connects', nickname);
+
+            // add the user to the list and create an event handler before the user leaves
+            $('.online-users-list').append('<li class="' + nickname + '">' + nickname + '</li>');
+            $(window).bind('beforeunload', function(){
+                socket.emit('user disconnects', nickname);
+            });
+
+            socket.on('user disconnects', function(user){
+                $('#messages').append('<li>' + user + ' disconnected</li>');
+                $('.online-users-list .' + user).remove();
+            });
 
             // send messages to server
             $('form').submit(function(){
