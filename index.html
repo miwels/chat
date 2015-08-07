@@ -27,30 +27,54 @@
                 location.href ="http://www.google.com";
             }
 
-            $('#m').keydown(function(){
-
-            });
-
             // user connects to the chat
             var socket = io();
             socket.emit('user connects', nickname);
 
+            // send messages to server
             $('form').submit(function(){
                 socket.emit('chat message', $('#m').val());
                 $('#m').val('');
                 return false;
             });
 
-            socket.on('user connects', function(msg){
-                $('#messages').append('<li>' + msg + '</li>');
-            });
-
+            // once a message has been received, append it to the chat window
             socket.on('chat message', function(msg){
                 $('#messages').append('<li>' + msg + '</li>');
             });
 
-            socket.on('user types', function(){
+            // display the nickname of the user who connected
+            socket.on('user connects', function(msg){
+                $('#messages').append('<li>' + msg + '</li>');
+            });
 
+            // when the user types, send an event
+            // send a 'user stopped typing' event 5 seconds after the user finishes typing
+            var typingTimer;
+            var doneTypingInterval = 500;
+            $('#m').keyup(function(){
+                clearTimeout(typingTimer);
+                typingTimer = setTimeout(function(){
+                    socket.emit('user stopped typing', nickname);
+                }, doneTypingInterval);
+            });
+
+            $('#m').keydown(function(){
+                clearTimeout(typingTimer);
+                socket.emit('user is typing', nickname);
+            });
+
+            // if one of the users is typing, display it in the chat window
+            socket.on('user is typing', function(user){
+                if($('.' + user).length == 0)
+                {
+                    $('#messages').append('<li class="' + user + '">' + user + ' is typing...</li>');
+                }
+            });
+
+            // if the user stopped typing, remove the message from the chat window
+            socket.on('user stopped typing', function(user){
+                $('#messages .' + user).remove();
             });
         </script>
     </body>
