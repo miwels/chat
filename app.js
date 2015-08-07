@@ -1,6 +1,7 @@
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var striptags = require('striptags');
 
 app.get('/', function(req, res){
 	res.sendfile('index.html');
@@ -17,6 +18,7 @@ io.on('connection', function(socket){
 	});
 
 	socket.on('chat message', function(msg, user){
+		msg = striptags(msg, '<b><strong><ul>'); // prevent users doing bad things!
 		io.emit('chat message', msg, user);
 	});
 

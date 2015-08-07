@@ -14,9 +14,11 @@
         </style>
     </head>
     <body>
+        <!--
         <div class="online-users">
             <ul class="online-users-list"></ul>
         </div>
+        -->
         <ul id="messages"></ul>
         <form action="">
             <input id="m" autocomplete="off" /><button>Send</button>
@@ -63,7 +65,7 @@
             });
 
             // when the user types, send an event
-            // send a 'user stopped typing' event 5 seconds after the user finishes typing
+            // send a 'user stopped typing' event 500 milliseconds after the user finishes typing
             var typingTimer;
             var doneTypingInterval = 500;
             $('#m').keyup(function(){
